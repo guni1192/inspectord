@@ -1,5 +1,7 @@
 # inspectord
 
+inspectord is an [aya](https://github.com/aya-rs/aya) demo application.
+
 ## Prerequisites
 
 1. Install bpf-linker: `cargo install bpf-linker`
@@ -21,9 +23,13 @@ cargo build
 
 ## Run
 
+in local
+
 ```bash
 RUST_LOG=info cargo xtask run
 ```
+
+on docker
 
 ```bash
 docker run \
