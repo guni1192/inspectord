@@ -24,3 +24,17 @@ cargo build
 ```bash
 RUST_LOG=info cargo xtask run
 ```
+
+```bash
+docker run \
+    -v /usr/src:/usr/src:ro \
+    -v /lib/modules/:/lib/modules:ro \
+    -v /sys/kernel/debug/:/sys/kernel/debug:rw \
+    -e RUST_BACKTRACE=1 \
+    -e RUST_LOG=info \
+    --net=host \
+    --pid=host \
+    --cap-add CAP_BPF \
+    --cap-add CAP_SYS_ADMIN \
+    guni1192/inspectord
+```
