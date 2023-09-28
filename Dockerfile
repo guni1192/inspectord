@@ -33,8 +33,6 @@ RUN --mount=type=bind,source=Cargo.toml,target=Cargo.toml \
     <<EOF
 set -e
 echo "### Installing eBPF tools ###"
-rustup toolchain uninstall nightly
-rustup toolchain install nightly
 cargo install bpf-linker cargo-xtask
 echo "### Building eBPF Bytecodes ###"
 cargo xtask build-ebpf --release
