@@ -7,16 +7,12 @@
 ################################################################################
 # Create a stage for building the application.
 
+
 ARG RUST_VERSION=1.70
 ARG APP_NAME=inspectord
-# FROM rust:${RUST_VERSION}-slim-bookworm AS build
-FROM rustlang/rust:nightly-bookworm-slim AS build
+FROM rust:${RUST_VERSION}-slim-bookworm AS build
 ARG APP_NAME
 WORKDIR /app
-
-RUN apt-get update && apt-get install -y \
-     libbpf-dev \
-&& apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Build the application.
 # Leverage a cache mount to /usr/local/cargo/registry/
@@ -42,10 +38,6 @@ rustup toolchain install nightly
 cargo install bpf-linker cargo-xtask
 echo "### Building eBPF Bytecodes ###"
 cargo xtask build-ebpf --release
-
-ls target/
-ls target/bpfel-unknown-none/
-
 echo "### Building eBPF Application ###"
 cargo build --locked --release
 cp ./target/release/$APP_NAME /bin/inspectord
@@ -64,11 +56,12 @@ EOF
 # (e.g., debian@sha256:ac707220fbd7b67fc19b112cee8170b41a9e97f703f588b2cdbbcdcecdd8af57).
 FROM debian:bookworm-slim AS final
 
+LABEL org.opencontainers.image.authors="iiguni.tks@gmail.com"
+LABEL org.opencontainers.image.source="https://github.com/guni1192/inspectord"
+LABEL org.opencontainers.image.url="docker.io/guni1192/inspectord"
+
 # Copy the executable from the "build" stage.
 COPY --from=build /bin/inspectord /bin/
-
-# Expose the port that the application listens on.
-EXPOSE 1192
 
 # What the container should run when it is started.
 CMD ["/bin/inspectord"]
